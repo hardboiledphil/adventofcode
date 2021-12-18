@@ -1,18 +1,4 @@
 /*
- Most common value in each column is used to make up gamma
- COnversely the least common value is each column is used to make up epsilon
-00100
-11110
-10110
-10111
-10101
-01111
-00111
-11100
-10000
-11001
-00010
-01010
 
  */
 
@@ -58,7 +44,7 @@ pub fn part_a(input: &str) -> i64 {
     gamma_int * epsilon_int
 }
 
-pub fn part_b(input: &str, most_common: bool) -> i64 {
+pub fn part_b(input: &str, mostCommon: bool) -> i64 {
     let mut lines: Vec<_> = input.trim().split('\n').collect();
     let column_count = lines[0].len();
 
@@ -80,7 +66,7 @@ pub fn part_b(input: &str, most_common: bool) -> i64 {
                 println!("ones: {}  zeros: {}", ones, zeros);
             // }
         }
-        if most_common {
+        if mostCommon {
             if ones >= zeros {
                 derived_code_oxygen.push('0');
             } else {
@@ -110,25 +96,25 @@ pub fn part_b(input: &str, most_common: bool) -> i64 {
 mod tests {
     #[test]
     fn part_a_test() {
-        assert_eq!(super::part_a(include_str!("testdata.txt")), 198);
+        assert_eq!(super::part_a(include_str!("testdata.txt")), -1);
     }
 
     #[test]
     fn part_a_real() {
-        assert_eq!(super::part_a(include_str!("realdata.txt")), 3969000);
+        assert_eq!(super::part_a(include_str!("realdata.txt")), -1);
     }
 
     #[test]
     fn part_b_test() {
         assert_eq!(super::part_b(include_str!("testdata.txt"), true)
                    * super::part_b(include_str!("testdata.txt"), false)
-                   , 230);
+                   , -1);
     }
 
     #[test]
     fn part_b_real() {
         assert_eq!(super::part_b(include_str!("realdata.txt"), true)
                        * super::part_b(include_str!("realdata.txt"), false)
-                   , 4267809);
+                   , -1);
     }
 }
