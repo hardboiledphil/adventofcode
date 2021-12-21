@@ -20,6 +20,7 @@
  2  0 12  3  7
  */
 
+
 pub struct Position {
     y: i32,
     x: i32,
@@ -44,81 +45,114 @@ impl BoardNumber {
 }
 
 pub struct Board {
-    boardName: String,
-    boardNumbers: Vec<BoardNumber>,
+    board_name: String,
+    board_numbers: Vec<BoardNumber>,
+    bingoed_out: bool,
 }
 
 impl Board {
     fn isCalled(&self, y: i32, x: i32) -> bool {
-        println!("checking y, x: {}, {}", y, x);
-        let exists =
-            self.boardNumbers.as_slice()
+        println!("  checking y, x: {}, {}", y, x);
+        let matchingNumbers =
+            self.board_numbers.as_slice()
                 .into_iter()
+                .filter(|board_number|
+                    y == board_number.location.y
+                    && x == board_number.location.x
+                    && true == board_number.is_called )
                 .map(|input| {
-                    println!("boardname: {} y: {} x: {}", self.boardName, y, x);
+//                    println!("  found boardname: {} y: {} x: {}, value: {}", self.boardName, y, x, input.value);
                     return input; })
-                .filter(|board_number| y == board_number.location.y)
-                .filter(|board_number| x == board_number.location.x)
-                .filter(|board_number| true == board_number.is_called)
                 .next();
-        if Some(exists).unwrap_or_else(|| true == false ) {
-            return true;
+        if matchingNumbers.is_some() {
+//           println!("  sending back called = true");
+            true
         } else {
-            return false;
+//            println!("  sending back called = false");
+            false
         }
     }
 }
 
 pub trait Bingo {
     fn accept_call(&mut self, call: i32) -> bool;
-    fn is_bingo(&self) -> bool;
+    fn is_bingo(&mut self) -> bool;
+    fn sum_uncalled(&self) -> i32;
 }
 
 impl Bingo for Board {
     // process the call for the board
     fn accept_call(&mut self, call: i32) -> bool {
-        println!("board {} accepting call {}", self.boardName, call);
         // loop through the board and mark as called if call number is found
-        let myvec = self.boardNumbers.as_mut_slice();
+        let myvec = self.board_numbers.as_mut_slice();
 
         for board_number in myvec {
-//            println!("boardnumber {} call {}", board_number.value, call);
             if board_number.value == call {
-                println!("matched on boardnumber {}", self.boardName);
                 board_number.is_called = true;
                 return true;
             }
         }
-        println!("marking board {} for call {}", self.boardName, call);
+        println!("  marking board {} for call {}", self.board_name, call);
         return false;
     }
 
-    fn is_bingo(&self) -> bool {
-        let board_numbers = self.boardNumbers.as_slice();
+    fn is_bingo(&mut self) -> bool {
+        // let board_numbers = self.boardNumbers.as_slice();
         // check if the board has full rows
         for y in 0..5 {
-            if !(self.isCalled(y, 0)
+            if self.isCalled(y, 0)
                 && self.isCalled(y, 1)
                 && self.isCalled(y, 2)
                 && self.isCalled(y, 3)
-                && self.isCalled(y, 4)) {
-                return false;
+                && self.isCalled(y, 4) {
+                println!("    BINGO for board {}", self.board_name);
+                self.bingoed_out = true;
+                return true
             }
         }
 
         // check if the board has full columns
         for x in 0..5 {
-            if !(self.isCalled(0, x)
+            if self.isCalled(0, x)
                 && self.isCalled(1, x)
                 && self.isCalled(2, x)
                 && self.isCalled(3, x)
-                && self.isCalled(4, x)) {
-                return false;
+                && self.isCalled(4, x) {
+                self.bingoed_out = true;
+                println!("    BINGO for board {}", self.board_name);
+                return true
             }
         }
-        println!("BINGO ");
-        true
+        false
     }
+
+    fn sum_uncalled(&self) -> i32 {
+        self.board_numbers
+            .as_slice()
+            .into_iter()
+            .filter( |board_number| board_number.is_called == false)
+            .map( |board_number| board_number.value)
+            .sum()
+    }
+}
+
+pub fn process_calls(call_value: i32, boards: &mut Vec<Board>) -> (i32, Option<&mut Board>) {
+    let mut bingo_board = (0, None);
+    let mut new_boards = boards.as_mut_slice().into_iter()
+        .filter(|board| !board.bingoed_out);
+    for board in new_boards {
+        println!("calling number {}", call_value);
+        let matches_call = board.accept_call(call_value);
+        // we got a match so see if we have a winner
+        if matches_call {
+            if board.is_bingo() {
+                println!("We have a winner on board {}", board.board_name);
+                bingo_board = (call_value, Some(board));
+                return bingo_board
+            }
+        }
+    }
+    return bingo_board
 }
 
 pub fn part_a(input: &str) -> i64 {
@@ -153,31 +187,93 @@ pub fn part_a(input: &str) -> i64 {
         }
 //        println!("data lines when flattened is {}", data_lines);
         if !board_numbers.is_empty() {
-            let new_board = Board { boardNumbers: board_numbers, boardName: board_count.to_string() };
-            &mut boards.push(new_board);
+            let new_board = Board { board_numbers: board_numbers,
+                board_name: board_count.to_string(),
+                bingoed_out: false };
+            boards.push(new_board);
             board_count += 1;
         }
     }
 
     // feed the numbers into the boards and get them to check for a row/column
-    for call in calls {
-        println!("calling number {}", call);
-        for board in boards.as_mut_slice() {
-            let matches_call = board.accept_call(call);
-            if matches_call {
-                if board.is_bingo() {
-                    println!("We have a winner");
-                }
-            }
+    let mut winning_board = (0, None);
+    for call_value in calls.as_slice().into_iter() {
+        winning_board = process_calls(*call_value, &mut boards);
+        if winning_board.1.is_some() {
+            break;
         }
     }
 
+    match winning_board {
+        (0, _) => return 0,
+        (_, Some(_)) => return winning_board.1.unwrap()
+            .board_numbers
+            .as_slice().into_iter()
+            .filter(|board_number| board_number.is_called == false)
+            .map(|board| board.value as i64)
+            .sum::<i64>() * winning_board.0 as i64,
+        (_, _) => panic!("Shouldn't end up here"),
+    }
 
-    0
 }
 
 pub fn part_b(input: &str) -> i64 {
-    0
+    let mut lines = input.trim().split('\n');
+
+    // read the line for the numbers
+    let calls: Vec<i32> = lines
+        .next()
+        .unwrap()
+        .split(',')
+        .map(|number_str| number_str.parse().unwrap())
+        .collect();
+
+    let mut boards: Vec<Board> = Vec::new();
+
+    let mut board_count = 0;
+    // read the rest of the lines and generate the boards
+    while let Some(_) = lines.next() {
+        let mut line_count :i32 = 0;
+        let mut board_numbers: Vec<BoardNumber> = Vec::new();
+        for y in 0..5 {
+            println!("starting board number {}", board_count);
+            for (x, number_as_str) in lines.next().unwrap().split(' ').enumerate() {
+//                println!("line {} column {} number {}", y, x, number_as_str);
+                if !number_as_str.is_empty() {
+                    let number = number_as_str.parse().unwrap();
+                    let board_number = BoardNumber::new(false, Position::new(y, x as i32), number);
+                    board_numbers.push(board_number);
+                }
+                line_count += 1;
+            }
+        }
+//        println!("data lines when flattened is {}", data_lines);
+        if !board_numbers.is_empty() {
+            let new_board = Board { board_numbers: board_numbers,
+                board_name: board_count.to_string(),
+                bingoed_out: false};
+            boards.push(new_board);
+            board_count += 1;
+        }
+    }
+
+    // feed the numbers into the boards and get them to check for a row/column
+    let mut winning_board = (0, None);
+    for call_value in calls.as_slice().into_iter() {
+        winning_board = process_calls(*call_value, &mut boards);
+        // don't break out after a winning board as we want the last one
+    }
+
+    match winning_board {
+        (0, _) => return 0,
+        (_, Some(_)) => return winning_board.1.unwrap()
+            .board_numbers
+            .as_slice().into_iter()
+            .filter(|board_number| board_number.is_called == false)
+            .map(|board| board.value as i64)
+            .sum::<i64>() * winning_board.0 as i64,
+        (_, _) => panic!("Shouldn't end up here"),
+    }
 }
 
 
@@ -190,12 +286,12 @@ mod tests {
 
     #[test]
     fn part_a_real() {
-        assert_eq!(super::part_a(include_str!("realdata.txt")), -1);
+        assert_eq!(super::part_a(include_str!("realdata.txt")), 11774);
     }
 
     #[test]
     fn part_b_test() {
-        assert_eq!(super::part_b(include_str!("testdata.txt")), -1);
+        assert_eq!(super::part_b(include_str!("testdata.txt")), 1924);
     }
 
     #[test]
