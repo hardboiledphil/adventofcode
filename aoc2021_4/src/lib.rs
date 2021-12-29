@@ -20,7 +20,7 @@
  2  0 12  3  7
  */
 
-
+#[derive(Copy, Clone)]
 pub struct Position {
     y: i32,
     x: i32,
@@ -32,6 +32,7 @@ impl Position {
     }
 }
 
+#[derive(Copy, Clone)]
 pub struct BoardNumber {
     is_called: bool,
     location: Position,
@@ -136,11 +137,13 @@ impl Bingo for Board {
     }
 }
 
-pub fn process_calls(call_value: i32, boards: &mut Vec<Board>) -> (i32, Option<&mut Board>) {
+pub fn process_calls<'a>(call_value: i32, boards: &mut Vec<&'a mut Board>) -> (i32, Option<&'a mut Board>) {
     let mut bingo_board = (0, None);
-    let mut new_boards = boards.as_mut_slice().into_iter()
-        .filter(|board| !board.bingoed_out);
-    for board in new_boards {
+    // boards.
+
+    let mut new_boards =
+        boards.into_iter().filter(|board| !board.bingoed_out);
+    for &mut board in new_boards {
         println!("calling number {}", call_value);
         let matches_call = board.accept_call(call_value);
         // we got a match so see if we have a winner
@@ -166,7 +169,7 @@ pub fn part_a(input: &str) -> i64 {
         .map(|number_str| number_str.parse().unwrap())
         .collect();
 
-    let mut boards: Vec<Board> = Vec::new();
+    let mut boards: Vec<&mut Board> = Vec::new();
 
     let mut board_count = 0;
     // read the rest of the lines and generate the boards
@@ -190,7 +193,7 @@ pub fn part_a(input: &str) -> i64 {
             let new_board = Board { board_numbers: board_numbers,
                 board_name: board_count.to_string(),
                 bingoed_out: false };
-            boards.push(new_board);
+            boards.push(&mut new_board);
             board_count += 1;
         }
     }
@@ -218,62 +221,63 @@ pub fn part_a(input: &str) -> i64 {
 }
 
 pub fn part_b(input: &str) -> i64 {
-    let mut lines = input.trim().split('\n');
-
-    // read the line for the numbers
-    let calls: Vec<i32> = lines
-        .next()
-        .unwrap()
-        .split(',')
-        .map(|number_str| number_str.parse().unwrap())
-        .collect();
-
-    let mut boards: Vec<Board> = Vec::new();
-
-    let mut board_count = 0;
-    // read the rest of the lines and generate the boards
-    while let Some(_) = lines.next() {
-        let mut line_count :i32 = 0;
-        let mut board_numbers: Vec<BoardNumber> = Vec::new();
-        for y in 0..5 {
-            println!("starting board number {}", board_count);
-            for (x, number_as_str) in lines.next().unwrap().split(' ').enumerate() {
-//                println!("line {} column {} number {}", y, x, number_as_str);
-                if !number_as_str.is_empty() {
-                    let number = number_as_str.parse().unwrap();
-                    let board_number = BoardNumber::new(false, Position::new(y, x as i32), number);
-                    board_numbers.push(board_number);
-                }
-                line_count += 1;
-            }
-        }
-//        println!("data lines when flattened is {}", data_lines);
-        if !board_numbers.is_empty() {
-            let new_board = Board { board_numbers: board_numbers,
-                board_name: board_count.to_string(),
-                bingoed_out: false};
-            boards.push(new_board);
-            board_count += 1;
-        }
-    }
-
-    // feed the numbers into the boards and get them to check for a row/column
-    let mut winning_board = (0, None);
-    for call_value in calls.as_slice().into_iter() {
-        winning_board = process_calls(*call_value, &mut boards);
-        // don't break out after a winning board as we want the last one
-    }
-
-    match winning_board {
-        (0, _) => return 0,
-        (_, Some(_)) => return winning_board.1.unwrap()
-            .board_numbers
-            .as_slice().into_iter()
-            .filter(|board_number| board_number.is_called == false)
-            .map(|board| board.value as i64)
-            .sum::<i64>() * winning_board.0 as i64,
-        (_, _) => panic!("Shouldn't end up here"),
-    }
+//     let mut lines = input.trim().split('\n');
+//
+//     // read the line for the numbers
+//     let calls: Vec<i32> = lines
+//         .next()
+//         .unwrap()
+//         .split(',')
+//         .map(|number_str| number_str.parse().unwrap())
+//         .collect();
+//
+//     let mut boards: Vec<Board> = Vec::new();
+//
+//     let mut board_count = 0;
+//     // read the rest of the lines and generate the boards
+//     while let Some(_) = lines.next() {
+//         let mut line_count :i32 = 0;
+//         let mut board_numbers: Vec<BoardNumber> = Vec::new();
+//         for y in 0..5 {
+//             println!("starting board number {}", board_count);
+//             for (x, number_as_str) in lines.next().unwrap().split(' ').enumerate() {
+// //                println!("line {} column {} number {}", y, x, number_as_str);
+//                 if !number_as_str.is_empty() {
+//                     let number = number_as_str.parse().unwrap();
+//                     let board_number = BoardNumber::new(false, Position::new(y, x as i32), number);
+//                     board_numbers.push(board_number);
+//                 }
+//                 line_count += 1;
+//             }
+//         }
+// //        println!("data lines when flattened is {}", data_lines);
+//         if !board_numbers.is_empty() {
+//             let new_board = Board { board_numbers: board_numbers,
+//                 board_name: board_count.to_string(),
+//                 bingoed_out: false};
+//             boards.push(new_board);
+//             board_count += 1;
+//         }
+//     }
+//
+//     // feed the numbers into the boards and get them to check for a row/column
+//     let mut winning_board = (0, None);
+//     for call_value in calls.as_slice().into_iter() {
+//         winning_board = process_calls(*call_value, &mut boards);
+//         // don't break out after a winning board as we want the last one
+//     }
+//
+//     match winning_board {
+//         (0, _) => return 0,
+//         (_, Some(_)) => return winning_board.1.unwrap()
+//             .board_numbers
+//             .as_slice().into_iter()
+//             .filter(|board_number| board_number.is_called == false)
+//             .map(|board| board.value as i64)
+//             .sum::<i64>() * winning_board.0 as i64,
+//         (_, _) => panic!("Shouldn't end up here"),
+//     }
+    0
 }
 
 

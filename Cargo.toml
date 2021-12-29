@@ -4,5 +4,12 @@ members = [
     "aoc2021_1",
     "aoc2021_2",
     "aoc2021_3",
-    "aoc2021_4"
+    "aoc2021_4",
+    "aoc2021_4_box",
+    "scratchpad",
+    "scratchpad_test_copy_struct",
+    "scratchpad_test_struct_boxed",
+    "scratchpad_test_struct_boxed1",
+    "scratchpad_test_struct_byref",
+    "scratchpad_vector_of_simple_structs"
 ]

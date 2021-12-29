@@ -17,3 +17,31 @@ version = "0.1.0"
 [[package]]
 name = "aoc2021_4"
 version = "0.1.0"
+
+[[package]]
+name = "aoc2021_4_box"
+version = "0.1.0"
+
+[[package]]
+name = "scratchpad"
+version = "0.1.0"
+
+[[package]]
+name = "scratchpad_test_copy_struct"
+version = "0.1.0"
+
+[[package]]
+name = "scratchpad_test_struct_boxed"
+version = "0.1.0"
+
+[[package]]
+name = "scratchpad_test_struct_boxed1"
+version = "0.1.0"
+
+[[package]]
+name = "scratchpad_test_struct_byref"
+version = "0.1.0"
+
+[[package]]
+name = "scratchpad_vector_of_simple_structs"
+version = "0.1.0"
