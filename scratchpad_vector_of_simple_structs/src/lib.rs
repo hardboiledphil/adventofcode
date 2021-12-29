@@ -9,11 +9,11 @@ pub fn test_me() {
     playgrounds.push(playground1);
     playgrounds.push(playground2);
 
-    increase_number_in_playground(playgrounds);
-//    assert_eq!(playground1.number, 43);
+    increase_number_in_playground(playgrounds.get_mut(0));
+    assert_eq!(playgrounds.get(0).unwrap().number, 43);
     playgrounds.push(playground3);
-    // increase_number_in_playground(playgrounds.get_mut(2).unwrap());
-    // assert_eq!(playground3.number, 4223);
+    increase_number_in_playground(playgrounds.get_mut(2));
+    assert_eq!(playgrounds.get(2).unwrap().number, 4223);
     // println!("playground {:?}", playgrounds);
 }
 
@@ -22,10 +22,10 @@ struct Playground {
     number: i32
 }
 
-fn increase_number_in_playground(playground: &mut Vec<Playground>) {
-    let iter = playground.iter_mut();
-    for iter_playground in iter {
-        iter_playground.number +=1;
+fn increase_number_in_playground(playground: Option<&mut Playground>) {
+    match playground {
+        None => {}
+        Some(_) => { playground.unwrap().number += 1; }
     }
 }
 
