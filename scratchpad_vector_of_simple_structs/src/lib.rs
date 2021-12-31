@@ -12,9 +12,11 @@ pub fn test_me() {
     increase_number_in_playground(playgrounds.get_mut(0));
     assert_eq!(playgrounds.get(0).unwrap().number, 43);
     playgrounds.push(playground3);
+    increase_number_in_playground(playgrounds.get_mut(1));
+    assert_eq!(playgrounds.get(1).unwrap().number, 423);
     increase_number_in_playground(playgrounds.get_mut(2));
     assert_eq!(playgrounds.get(2).unwrap().number, 4223);
-    // println!("playground {:?}", playgrounds);
+    println!("playground {:?}", playgrounds);
 }
 
 #[derive(Debug)]

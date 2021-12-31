@@ -43,5 +43,13 @@ name = "scratchpad_test_struct_byref"
 version = "0.1.0"
 
 [[package]]
+name = "scratchpad_vector_of_complex_structs"
+version = "0.1.0"
+
+[[package]]
+name = "scratchpad_vector_of_medium_structs"
+version = "0.1.0"
+
+[[package]]
 name = "scratchpad_vector_of_simple_structs"
 version = "0.1.0"

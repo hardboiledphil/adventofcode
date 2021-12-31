@@ -11,5 +11,7 @@ members = [
     "scratchpad_test_struct_boxed",
     "scratchpad_test_struct_boxed1",
     "scratchpad_test_struct_byref",
-    "scratchpad_vector_of_simple_structs"
+    "scratchpad_vector_of_simple_structs",
+    "scratchpad_vector_of_medium_structs",
+    "scratchpad_vector_of_complex_structs"
 ]
