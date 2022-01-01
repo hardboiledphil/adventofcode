@@ -72,30 +72,22 @@ fn increase_numbers_in_position(playground: Option<&mut Playground>) {
 }
 
 fn increase_numbers_in_pair(playground: Option<&mut Playground>) {
-    match playground {
-        None => {}
-        Some(_) => {
-            let mut my_playground = playground.unwrap();
-            my_playground.pair.0 += 1;
-            my_playground.pair.1 += 1;
-        }
+    if let Some(playground_unwrapped) = playground {
+        playground_unwrapped.pair.0 += 1;
+        playground_unwrapped.pair.1 += 1;
     }
 }
 
 fn increase_numbers_in_vector(playground: Option<&mut Playground>) {
-    match playground {
-        None => {}
-        Some(_) => {
-            playground.unwrap().numbers.myfoo.iter_mut()
+    if let Some(playground_unwrapped) = playground {
+        playground_unwrapped.numbers.myfoo.iter_mut()
                 .for_each(|x| *x += 1);
-        }
-    }
+            }
 }
 
 fn increase_number_in_playground(playground: Option<&mut Playground>) {
-    match playground {
-        None => {}
-        Some(_) => { playground.unwrap().value += 1; }
+    if let Some(playground_unwrapped) = playground {
+        playground_unwrapped.value += 1;
     }
 }
 fn update_name_to_match_number(playground: Option<&mut Playground>) {

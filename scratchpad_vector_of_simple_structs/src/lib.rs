@@ -25,10 +25,8 @@ struct Playground {
 }
 
 fn increase_number_in_playground(playground: Option<&mut Playground>) {
-    match playground {
-        None => {}
-        Some(_) => { playground.unwrap().number += 1; }
-    }
+    if let Some(playground_unwrapped) = playground {
+        playground_unwrapped.number += 1; }
 }
 
 #[cfg(test)]

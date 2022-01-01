@@ -30,18 +30,13 @@ struct Playground {
 }
 
 fn increase_number_in_playground(playground: Option<&mut Playground>) {
-    match playground {
-        None => {}
-        Some(_) => { playground.unwrap().number += 1; }
-    }
+    if let Some(playground_unwrapped) = playground {
+        playground_unwrapped.number += 1; }
 }
+
 fn update_name_to_match_number(playground: Option<&mut Playground>) {
-    match playground {
-        None => {}
-        Some(_) => {
-            let playground_ref = playground.unwrap();
-            playground_ref.name = NUMBER.to_owned() + playground_ref.number.to_string().as_str();
-        }
+    if let Some(playground_unwrapped) = playground {
+        playground_unwrapped.name = NUMBER.to_owned() + playground_unwrapped.number.to_string().as_str();
     }
 }
 
