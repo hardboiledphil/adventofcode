@@ -5,6 +5,7 @@ members = [
     "aoc2021_2",
     "aoc2021_3",
     "aoc2021_4",
+    "aoc2021_5",
     "aoc2021_4_box",
     "scratchpad",
     "scratchpad_test_copy_struct",
