@@ -36,7 +36,7 @@ impl BoardNumber {
 
 pub struct Board<'a> {
     board_name: String,
-    board_numbers: &'a mut Vec<BoardNumber>,
+    bingo_numbers: &'a mut Vec<BoardNumber>,
     bingoed_out: bool,
 }
 
@@ -45,10 +45,10 @@ impl Board<'_> {
         println!("  checking y, x: {} {}", position_to_check.0, position_to_check.1);
         // let matching_numbers = false;
         for board_number_to_check in 0..25 {
-            // let board_number_to_check_val = self.board_numbers[board_number_to_check];
-            if self.board_numbers[board_number_to_check].y == position_to_check.0
-                && self.board_numbers[board_number_to_check].x == position_to_check.1
-                && self.board_numbers[board_number_to_check].is_called {
+            // let board_number_to_check_val = self.bingo_numbers[board_number_to_check];
+            if self.bingo_numbers[board_number_to_check].y == position_to_check.0
+                && self.bingo_numbers[board_number_to_check].x == position_to_check.1
+                && self.bingo_numbers[board_number_to_check].is_called {
                 return true
             }
         }
@@ -66,7 +66,7 @@ impl Bingo for Board<'_> {
     // process the call for the board
     fn accept_call(&mut self, call: i32) -> bool {
         // loop through the board and mark as called if call number is found
-        let mut myvec = self.board_numbers.iter_mut();
+        let mut myvec = self.bingo_numbers.iter_mut();
 
         for board_number in myvec {
             if board_number.value == call {
@@ -79,7 +79,7 @@ impl Bingo for Board<'_> {
     }
 
     fn is_bingo(&mut self) -> bool {
-        // let board_numbers = self.boardNumbers.as_slice();
+        // let bingo_numbers = self.boardNumbers.as_slice();
         // check if the board has full rows
         for y in 0..5 {
             if self.isCalled((y, 0))
@@ -111,11 +111,11 @@ impl Bingo for Board<'_> {
     fn sum_uncalled(&self) -> i32 {
         let mut sum_total_uncalled = 0;
         for x in 0..25 {
-           let test_board_number = self.board_numbers.get(x).unwrap();
+           let test_board_number = self.bingo_numbers.get(x).unwrap();
             if !test_board_number.is_called {
                 sum_total_uncalled += test_board_number.value;
             }
-            // match self.board_numbers.get(x).unwrap())
+            // match self.bingo_numbers.get(x).unwrap())
         }
         sum_total_uncalled
     }
@@ -157,8 +157,8 @@ pub fn part_a(input: &str) -> i64 {
     // read the rest of the lines and generate the boards
     while let Some(_) = lines.next() {
         // let mut line_count :i32 = 0;
-        let mut board_numbers: &Vec<BoardNumber> = &vec![];
-        // let board_numbers_ref = &board_numbers;
+        let mut bingo_numbers: &Vec<BoardNumber> = &vec![];
+        // let board_numbers_ref = &bingo_numbers;
         for y in 0..5 {
             println!("starting board number {}", board_count);
             for (x, number_as_str) in lines.next().unwrap().split(' ').enumerate() {
@@ -167,14 +167,14 @@ pub fn part_a(input: &str) -> i64 {
                     let number = number_as_str.parse().unwrap();
                     let board_number = BoardNumber::new(false, y, x as i32, number);
                     // let board_number_position = ((y * 5) + x as i32) as usize;
-                    board_numbers.push(board_number);
+                    bingo_numbers.push(board_number);
                 }
                 // line_count += 1;
             }
         }
 //        println!("data lines when flattened is {}", data_lines);
-        if !board_numbers.is_empty() {
-            let new_board = Board { board_numbers: board_numbers,
+        if !bingo_numbers.is_empty() {
+            let new_board = Board { bingo_numbers: bingo_numbers,
                 board_name: board_count.to_string(),
                 bingoed_out: false };
             boards.push(new_board);
