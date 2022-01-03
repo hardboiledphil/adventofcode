@@ -196,6 +196,6 @@ mod tests {
 
     #[test]
     fn part_b_real() {
-        assert_eq!(super::part_b(include_str!("realdata.txt")), -1);
+        assert_eq!(super::part_b(include_str!("realdata.txt")), 17741);
     }
 }
