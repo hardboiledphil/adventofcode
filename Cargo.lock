@@ -27,6 +27,14 @@ name = "aoc2021_5"
 version = "0.1.0"
 
 [[package]]
+name = "aoc2021_6"
+version = "0.1.0"
+
+[[package]]
+name = "aoc2021_6a"
+version = "0.1.0"
+
+[[package]]
 name = "scratchpad"
 version = "0.1.0"
 
