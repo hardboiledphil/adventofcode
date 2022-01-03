@@ -55,17 +55,17 @@ use std::collections::HashMap;
 pub fn part_a(input: &str) -> i64 {
     let mut data_map: HashMap<(i64, i64), i64>= HashMap::new();
 
-    let mut lines = input.trim().split('\n');
+    let lines = input.trim().split('\n');
 
     for line in lines {
         let mut parts = line.split(" -> ");
-        let mut start: Vec<i64> = parts
+        let start: Vec<i64> = parts
             .next()
             .unwrap()
             .split(",")
             .map(|value| value.parse().unwrap())
             .collect();
-        let mut end: Vec<i64> = parts
+        let end: Vec<i64> = parts
             .next()
             .unwrap()
             .split(",")
@@ -80,7 +80,7 @@ pub fn part_a(input: &str) -> i64 {
         // where the x's are the same then process the y's
         if start_x == end_x {
             // iterate through the y's
-            // println!("looking at x:{} from: {} to: {}", start_x, start_y.min(end_y), end_y.max(start_y));
+            println!("looking at x:{} from: {} to: {}", start_x, start_y.min(end_y), end_y.max(start_y));
             for y in start_y.min(end_y)..=end_y.max(start_y) {
                 // println!("plotting {},{}", start_x, y);
                 *data_map.entry((start_x, y)).or_default() += 1;
@@ -90,7 +90,7 @@ pub fn part_a(input: &str) -> i64 {
         // where the y's are the same then process the x's
         if start_y == end_y {
             // iterate through the x's
-            // println!("looking at y:{} from: {} to: {}", start_y, start_x.min(end_x), end_x.max(start_x));
+            println!("looking at y:{} from: {} to: {}", start_y, start_x.min(end_x), end_x.max(start_x));
             for x in start_x.min(end_x)..=end_x.max(start_x) {
                 // println!("plotting {}, {}", start_y, x);
                 *data_map.entry((x, start_y)).or_default() += 1;
@@ -105,17 +105,17 @@ pub fn part_a(input: &str) -> i64 {
 pub fn part_b(input: &str) -> i64 {
     let mut data_map: HashMap<(i64, i64), i64>= HashMap::new();
 
-    let mut lines = input.trim().split('\n');
+    let lines = input.trim().split('\n');
 
     for line in lines {
         let mut parts = line.split(" -> ");
-        let mut start: Vec<i64> = parts
+        let start: Vec<i64> = parts
             .next()
             .unwrap()
             .split(",")
             .map(|value| value.parse().unwrap())
             .collect();
-        let mut end: Vec<i64> = parts
+        let end: Vec<i64> = parts
             .next()
             .unwrap()
             .split(",")
@@ -147,6 +147,31 @@ pub fn part_b(input: &str) -> i64 {
             }
         }
 
+        let horizontal = (start_x - end_x).abs();
+        let vertical = (start_y - end_y).abs();
+
+        // println!("  horizontal {} vertical {}", horizontal, vertical);
+
+        // // if we can tell the values are on a diagonal then process them
+        if horizontal == vertical {
+            // println!("  Processing diagonal from {},{} to {},{}",
+            //     start_x, start_y, end_x, end_y);
+            let x_direction = if start_x - end_x > 0 { -1 } else { 1 };
+            let y_direction = if start_y - end_y > 0 { -1 } else { 1 };
+            // println!("  x_dir {} y_dir {}", x_direction, y_direction);
+
+            let mut latest_x = start_x;
+            let mut latest_y= start_y;
+            // println!("  latest_x {} latest_y {}", latest_x, latest_y);
+            *data_map.entry((latest_x, latest_y)).or_default() += 1;
+            while latest_x != end_x {
+                // println!("looking at: {},{}", latest_x, latest_y);
+                latest_x += x_direction;
+                latest_y += y_direction;
+                *data_map.entry((latest_x, latest_y)).or_default() += 1;
+            }
+            assert!(latest_y == end_y);
+        }
     }
 
     data_map.values().filter(|value| **value > 1).count() as i64
