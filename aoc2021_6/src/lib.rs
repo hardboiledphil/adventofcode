@@ -137,13 +137,13 @@ mod tests {
     //     assert_eq!(super::part_a(include_str!("realdata.txt")), 386640);
     // }
 
-    #[test]
-    fn part_b_test() {
-        assert_eq!(super::part_b(include_str!("testdata.txt")), 26984457539);
-    }
-
     // #[test]
-    // fn part_b_real() {
-    //     assert_eq!(super::part_b(include_str!("realdata.txt")), -1);
+    // fn part_b_test() {
+    //     assert_eq!(super::part_b(include_str!("testdata.txt")), 26984457539);
     // }
+
+    #[test]
+    fn part_b_real() {
+        assert_eq!(super::part_b(include_str!("realdata.txt")), -1);
+    }
 }

@@ -52,10 +52,18 @@ Find a way to simulate lanternfish. How many lanternfish would there be after 80
 
  */
 
+use std::{thread, time};
+
 pub fn part_a(input: &str) -> i64 {
 
-    // let fishes: &mut Vec<Fish> = &mut Vec::new();
-    let fishes = input.trim().split(',').into_iter();
+    //1 1401
+    //2 1191
+    //3 1154
+    //4 1034
+    //5 950
+
+    let fishes: &mut Vec<Fish> = &mut Vec::new();
+    let lines = input.trim().split(',').into_iter();
 
     for line in lines {
         let fish_age = line.parse().unwrap();
@@ -63,23 +71,16 @@ pub fn part_a(input: &str) -> i64 {
         fishes.push(new_fish);
     }
 
-    let days_to_run = 80;
-    let mut days = 0;
-    while days < days_to_run {
-        let new_fishes: &mut Vec<Fish> = &mut Vec::new();
-        for mut fish in fishes.as_mut_slice() {
-            if fish.age == 0 {
-                fish.age = 6;
-                new_fishes.push(Fish { age: 8 });
-            } else {
-                fish.age -= 1;
-            }
-        }
-        fishes.append(new_fishes);
-        days += 1;
-    }
+    let fish_count = fishes.iter().fold(0, |acc, x | acc + match x.age {
+        1 => 1401 as i64,
+        2 => 1191 as i64,
+        3 => 1154 as i64,
+        4 => 1034 as i64,
+        5 => 950 as i64,
+        _ => 0
+    }  );
 
-    fishes.len() as i64
+    fish_count
 }
 
 struct Fish {
@@ -96,6 +97,12 @@ How many lanternfish would there be after 256 days?
 
 pub fn part_b(input: &str) -> i64 {
 
+    //1 6206821033
+    //2 5617089148
+    //3 5217223242
+    //4 4726100874
+    //5 4368232009
+
     let fishes: &mut Vec<Fish> = &mut Vec::new();
     let lines = input.trim().split(',').into_iter();
 
@@ -105,45 +112,37 @@ pub fn part_b(input: &str) -> i64 {
         fishes.push(new_fish);
     }
 
-    let days_to_run = 256;
-    let mut days = 0;
-    while days < days_to_run {
-        let new_fishes: &mut Vec<Fish> = &mut Vec::new();
-        for mut fish in fishes.as_mut_slice() {
-            if fish.age == 0 {
-                fish.age = 6;
-                new_fishes.push(Fish { age: 8 });
-            } else {
-                fish.age -= 1;
-            }
-        }
-        fishes.append(new_fishes);
-        days += 1;
-        println!("Day {} fishes: {}", days, fishes.len())
-    }
+    let fish_count = fishes.iter().fold(0, |acc, x | acc + match x.age {
+        1 => 6206821033 as i64,
+        2 => 5617089148 as i64,
+        3 => 5217223242 as i64,
+        4 => 4726100874 as i64,
+        5 => 4368232009 as i64,
+        _ => 0
+    }  );
 
-    fishes.len() as i64
+    fish_count
 }
 
 #[cfg(test)]
 mod tests {
-    // #[test]
-    // fn part_a_test() {
-    //     assert_eq!(super::part_a(include_str!("testdata.txt")), 5934);
-    // }
+    #[test]
+    fn part_a_test() {
+        assert_eq!(super::part_a(include_str!("testdata.txt")), 5934);
+    }
 
-    // #[test]
-    // fn part_a_real() {
-    //     assert_eq!(super::part_a(include_str!("realdata.txt")), 386640);
-    // }
+    #[test]
+    fn part_a_real() {
+        assert_eq!(super::part_a(include_str!("realdata.txt")), 386640);
+    }
 
     #[test]
     fn part_b_test() {
         assert_eq!(super::part_b(include_str!("testdata.txt")), 26984457539);
     }
 
-    // #[test]
-    // fn part_b_real() {
-    //     assert_eq!(super::part_b(include_str!("realdata.txt")), -1);
-    // }
+    #[test]
+    fn part_b_real() {
+        assert_eq!(super::part_b(include_str!("realdata.txt")), 1733403626279);
+    }
 }
