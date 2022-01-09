@@ -10,6 +10,7 @@ members = [
     "aoc2021_6",
     "aoc2021_6a",
     "aoc2021_7",
+    "manhattan",
     "resistors",
     "scratchpad",
     "scratchpad_test_copy_struct",
@@ -19,5 +20,6 @@ members = [
     "scratchpad_vector_of_simple_structs",
     "scratchpad_vector_of_medium_structs",
     "scratchpad_vector_of_complex_structs",
-    "string_reverse"
+    "string_reverse",
+    "timestuff"
 ]

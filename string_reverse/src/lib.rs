@@ -13,50 +13,43 @@ pub fn reverse(input: &str) -> String {
 }
 
 #[cfg(test)]
-mod tests {
-
-    fn process_reverse_case(input: &str, expected: &str) {
-        assert_eq!(&super::reverse(input), expected)
-    }
-    #[test]
-    /// empty string
-    fn test_an_empty_string() {
-        process_reverse_case("", "");
-    }
-    #[test]
-    /// a word
-    fn test_a_word() {
-        process_reverse_case("robot", "tobor");
-    }
-    #[test]
-    /// a capitalized word
-    fn test_a_capitalized_word() {
-        process_reverse_case("Ramen", "nemaR");
-    }
-    #[test]
-    /// a sentence with punctuation
-    fn test_a_sentence_with_punctuation() {
-        process_reverse_case("I'm hungry!", "!yrgnuh m'I");
-    }
-    #[test]
-    /// a palindrome
-    fn test_a_palindrome() {
-        process_reverse_case("racecar", "racecar");
-    }
-    #[test]
-    /// an even-sized word
-    fn test_an_even_sized_word() {
-        process_reverse_case("drawer", "reward");
-    }
-    #[test]
-    /// wide characters
-    fn test_wide_characters() {
-        process_reverse_case("子猫", "猫子");
-    }
-    #[test]
-    #[cfg(feature = "grapheme")]
-    /// grapheme clusters
-    fn test_grapheme_clusters() {
-        process_reverse_case("uüu", "uüu");
-    }
+use time::PrimitiveDateTime as DateTime;
+/// Create a datetime from the given numeric point in time.
+///
+/// Panics if any field is invalid.
+fn dt(year: i32, month: u8, day: u8, hour: u8, minute: u8, second: u8) -> DateTime {
+    use time::{Date, Time};
+    DateTime::new(
+        Date::from_calendar_date(year, month.try_into().unwrap(), day).unwrap(),
+        Time::from_hms(hour, minute, second).unwrap(),
+    )
+}
+#[test]
+fn test_date() {
+    let start_date = dt(2011, 4, 25, 0, 0, 0);
+    assert_eq!(gigasecond::after(start_date), dt(2043, 1, 1, 1, 46, 40));
+}
+#[test]
+#[ignore]
+fn test_another_date() {
+    let start_date = dt(1977, 6, 13, 0, 0, 0);
+    assert_eq!(gigasecond::after(start_date), dt(2009, 2, 19, 1, 46, 40));
+}
+#[test]
+#[ignore]
+fn test_third_date() {
+    let start_date = dt(1959, 7, 19, 0, 0, 0);
+    assert_eq!(gigasecond::after(start_date), dt(1991, 3, 27, 1, 46, 40));
+}
+#[test]
+#[ignore]
+fn test_datetime() {
+    let start_date = dt(2015, 1, 24, 22, 0, 0);
+    assert_eq!(gigasecond::after(start_date), dt(2046, 10, 2, 23, 46, 40));
+}
+#[test]
+#[ignore]
+fn test_another_datetime() {
+    let start_date = dt(2015, 1, 24, 23, 59, 59);
+    assert_eq!(gigasecond::after(start_date), dt(2046, 10, 3, 1, 46, 39));
 }
