@@ -44,7 +44,7 @@ pub fn part_a(input: &str) -> i32 {
     // get a sorted array of all the crab positions
     for line in lines {
         let crab_position = line.parse().unwrap();
-        crab_positions.push(crab_position);
+xxxx     crab_positions.push(crab_position);
     }
 
     // for each distinct crab position work out the fuel cost for all crabs to get to that position.

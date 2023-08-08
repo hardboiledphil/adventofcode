@@ -1,5 +1,5 @@
 [package]
-name = "scratchpad_vector_of_simple_structs"
+name = "lrucache"
 version = "0.1.0"
 edition = "2021"
 
